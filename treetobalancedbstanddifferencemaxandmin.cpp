@@ -70,6 +70,16 @@ struct Node* sortedArrayToBST(vector<int>&arr,int start, int end)
  
     return root;
 }
+void*left(void*arg)
+{
+    struct Node*root=(struct Node*)arg;
+    root->left=sortedArrayToBST(a, 0, ((a.size()-1)/2)-1);
+}
+void*right(void*arg)
+{
+     struct Node*root=(struct Node*)arg;
+     root->right=sortedArrayToBST(a, ((a.size()-1)/2)+1,a.size()-1);
+}
 void* _min(void* arg)
 {
 
@@ -92,13 +102,14 @@ void* _max(void* arg)
     maxi = root->data;
     return NULL;
 }
+
 int main()
 {
     struct Node *root = node(100);
     root->left = node(1120);
     root->right = node(130);
     //root->left->left = node(10);
-    root->left->right = node(0);
+    root->left->right = node(2);
     root->right->left = node(120);
     root->right->right = node(370);
     printf("Given tree is\n");
@@ -122,7 +133,12 @@ int main()
     for(int i=0;i<a.size();i++)
     cout<<a[i]<<" ";
     cout<<endl;
-    struct Node* root2 = sortedArrayToBST(a, 0, a.size()-1);
+    struct Node* root2 = node(a[(a.size()-1)/2]);
+    pthread_create(&t1, NULL, left, (void *)root2);
+    pthread_create(&t2, NULL, right, (void *)root2);
+
+    pthread_join(t1, NULL);
+    pthread_join(t2, NULL);
     cout << "inorder Traversal of constructed BST \n";
   
     
